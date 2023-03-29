@@ -1,0 +1,57 @@
+﻿<Window x:Class="Deadlines.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Deadlines Timer" Height="600" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="165"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock  Grid.Row="0" Grid.Column="0" Text="Deadline Name:" Margin="0,0,0,3"/>
+            <TextBox  Grid.Row="0" Grid.Column="1" Text="{Binding NewDeadlineName}" Margin="0,0,0,3"/>
+            <TextBlock  Grid.Row="1" Grid.Column="0" Text="Deadline Time:" Margin="0,0,0,3"/>
+            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding NewDeadlineDateTime}" Margin="0,0,0,3" Format="Custom"  FormatString="dd.mm.yyyy HH:mm"/>
+            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding AddDeadlineCommand}">
+                <Image Source="/Icons/add.png" Height="22" Width="22"></Image>
+            </Button>
+        </Grid>
+        <ListBox ItemsSource="{Binding Deadlines}" Grid.Row="1" Margin="10,0,10,10" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="LightGray" BorderThickness="1" Padding="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="20"/>
+                            <Button Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Command="{Binding DataContext.DeleteDeadlineCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}" >
+                                <Image Source="/Icons/delete.png" Height="22" Width="22"></Image>
+                            </Button>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding TimeRemaining, StringFormat='{}{0:%d} days {00:hh}:{00:mm}:{00:ss}'}" FontSize="30" />
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>
+
+
+
