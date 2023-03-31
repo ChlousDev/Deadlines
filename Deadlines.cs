@@ -5,11 +5,29 @@ using System.Timers;
 
 namespace Deadlines
 {
-    public class Deadline: INotifyPropertyChanged
+    public class Deadline : INotifyPropertyChanged
     {
         public string Name { get; set; }
         public DateTime Time { get; set; }
-        public TimeSpan TimeRemaining => Time - DateTime.Now;
+        public string TimeRemaining
+        {
+            get
+            {
+                TimeSpan timeRemaining = Time - DateTime.Now;
+                if (timeRemaining < TimeSpan.Zero)
+                {
+                    timeRemaining = TimeSpan.Zero;
+                }
+                string timeRemainingString = timeRemaining.ToString(@"%d' days 'hh\:mm\:ss");
+                if (timeRemaining.Days < 1)
+                {
+                    {
+                        timeRemainingString = timeRemaining.ToString(@"hh\:mm\:ss");
+                    }
+                }
+                return timeRemainingString;
+            }
+        }
 
 
 

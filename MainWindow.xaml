@@ -26,7 +26,7 @@
                 <Image Source="/Icons/add.png" Height="22" Width="22"></Image>
             </Button>
         </Grid>
-        <ListBox ItemsSource="{Binding Deadlines}" Grid.Row="1" Margin="10,0,10,10" HorizontalContentAlignment="Stretch">
+        <ListBox ItemsSource="{Binding Deadlines.View}" Grid.Row="1" Margin="10,0,10,10" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="LightGray" BorderThickness="1" Padding="5">
@@ -43,7 +43,7 @@
                             <Button Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Command="{Binding DataContext.DeleteDeadlineCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}" >
                                 <Image Source="/Icons/delete.png" Height="22" Width="22"></Image>
                             </Button>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding TimeRemaining, StringFormat='{}{0:%d} days {00:hh}:{00:mm}:{00:ss}'}" FontSize="30" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding TimeRemaining}" FontSize="30" />
 
                         </Grid>
                     </Border>

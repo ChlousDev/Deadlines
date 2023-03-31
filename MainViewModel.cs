@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Deadlines
@@ -18,7 +19,8 @@ namespace Deadlines
     {
         private readonly Timer timer;
 
-        public ObservableCollection<Deadline> Deadlines { get; private set; }
+        private ObservableCollection<Deadline> deadlines;
+        public CollectionViewSource Deadlines { get; private set; }
         public ICommand DeleteDeadlineCommand { get; private set; }
         public ICommand AddDeadlineCommand { get; private set; }
 
@@ -70,7 +72,7 @@ namespace Deadlines
 
         private void SaveDeadlinesToJson()
         {
-            string json = JsonConvert.SerializeObject(this.Deadlines);
+            string json = JsonConvert.SerializeObject(this.deadlines);
             File.WriteAllText("deadlines.json", json);
         }
 
@@ -80,20 +82,24 @@ namespace Deadlines
             if (File.Exists("deadlines.json"))
             {
                 string json = File.ReadAllText("deadlines.json");
-                this.Deadlines = JsonConvert.DeserializeObject<ObservableCollection<Deadline>>(json);
+                this.deadlines = JsonConvert.DeserializeObject<ObservableCollection<Deadline>>(json);
             }
 
             // create a new empty list if the file doesn't exist
-            if (this.Deadlines == null)
+            if (this.deadlines == null)
             {
-                this.Deadlines = new ObservableCollection<Deadline>();
+                this.deadlines = new ObservableCollection<Deadline>();
             }
+
+            this.Deadlines = new CollectionViewSource();
+            this.Deadlines.Source = this.deadlines;
+            this.Deadlines.SortDescriptions.Add(new SortDescription(nameof(Deadline.Time), ListSortDirection.Ascending));
         }
 
         private void DeleteDeadline(object parameter)
         {
             Deadline deadline = (Deadline)parameter;
-            this.Deadlines.Remove(deadline);
+            this.deadlines.Remove(deadline);
             this.SaveDeadlinesToJson();
         }
 
@@ -111,7 +117,7 @@ namespace Deadlines
             {
                 // create a new Deadline object and add it to the list
                 Deadline deadline = new Deadline(this.NewDeadlineName, this.NewDeadlineDateTime.Value);
-                this.Deadlines.Add(deadline);
+                this.deadlines.Add(deadline);
 
                 // save the deadlines to the JSON file
                 this.SaveDeadlinesToJson();
@@ -131,7 +137,7 @@ namespace Deadlines
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach(Deadline deadline in this.Deadlines)
+            foreach(Deadline deadline in this.deadlines)
             {
                 deadline.UpdateTimeRemaining();
             }
