@@ -34,6 +34,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -44,7 +45,7 @@
                                 <Image Source="/Icons/delete.png" Height="22" Width="22"></Image>
                             </Button>
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding TimeRemaining}" FontSize="30" />
-
+                            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Time, StringFormat='dd.MM.yyyy HH:mm'}" FontSize="10" />
                         </Grid>
                     </Border>
                 </DataTemplate>
