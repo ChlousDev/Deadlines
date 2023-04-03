@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -23,6 +24,7 @@ namespace Deadlines
         public CollectionViewSource Deadlines { get; private set; }
         public ICommand DeleteDeadlineCommand { get; private set; }
         public ICommand AddDeadlineCommand { get; private set; }
+        public ICommand EditDeadlineCommand { get; private set; }
 
         private string newDeadlineName;
         public string NewDeadlineName
@@ -60,40 +62,42 @@ namespace Deadlines
 
         public MainViewModel()
         {
+            this.deadlines = new ObservableCollection<Deadline>();
+            this.Deadlines = new CollectionViewSource();
+            this.Deadlines.Source = this.deadlines;
+            this.Deadlines.SortDescriptions.Add(new SortDescription(nameof(Deadline.Time), ListSortDirection.Ascending));
+            this.LoadDeadlinesFromJson();
+
             this.timer = new Timer(1000);
             this.timer.Elapsed += Timer_Elapsed;
             this.timer.Start();
 
-            this.LoadDeadlinesToJson();
-
             this.DeleteDeadlineCommand = new RelayCommand<object>(DeleteDeadline);
+            this.EditDeadlineCommand = new RelayCommand<object>(EditDeadline);
             this.AddDeadlineCommand = new RelayCommand(AddDeadline);
         }
 
         private void SaveDeadlinesToJson()
         {
-            string json = JsonConvert.SerializeObject(this.deadlines);
+            string json = JsonConvert.SerializeObject(this.deadlines.ToList());
             File.WriteAllText("deadlines.json", json);
         }
 
-        private void LoadDeadlinesToJson()
+        private void LoadDeadlinesFromJson()
         {
+            List<Deadline> deadlines = new List<Deadline>();
             // load the deadlines from the JSON file
             if (File.Exists("deadlines.json"))
             {
                 string json = File.ReadAllText("deadlines.json");
-                this.deadlines = JsonConvert.DeserializeObject<ObservableCollection<Deadline>>(json);
+                deadlines = JsonConvert.DeserializeObject<List<Deadline>>(json);
             }
 
-            // create a new empty list if the file doesn't exist
-            if (this.deadlines == null)
+            this.deadlines.Clear();
+            foreach(Deadline deadline in deadlines)
             {
-                this.deadlines = new ObservableCollection<Deadline>();
+                this.deadlines.Add(deadline);
             }
-
-            this.Deadlines = new CollectionViewSource();
-            this.Deadlines.Source = this.deadlines;
-            this.Deadlines.SortDescriptions.Add(new SortDescription(nameof(Deadline.Time), ListSortDirection.Ascending));
         }
 
         private void DeleteDeadline(object parameter)
@@ -101,6 +105,21 @@ namespace Deadlines
             Deadline deadline = (Deadline)parameter;
             this.deadlines.Remove(deadline);
             this.SaveDeadlinesToJson();
+        }
+
+        private void EditDeadline(object parameter)
+        {
+            Deadline deadline = (Deadline)parameter;
+            DeadlineDialog deadlineDialog = new DeadlineDialog(deadline);
+            deadlineDialog.Owner = App.Current.MainWindow;
+            if (deadlineDialog.ShowDialog() == true)
+            {
+                this.SaveDeadlinesToJson();
+            }
+            else
+            {
+                this.LoadDeadlinesFromJson();
+            }
         }
 
         private void AddDeadline()
@@ -137,10 +156,14 @@ namespace Deadlines
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach(Deadline deadline in this.deadlines)
+            try
             {
-                deadline.UpdateTimeRemaining();
+                foreach (Deadline deadline in this.deadlines)
+                {
+                    deadline.UpdateTimeRemaining();
+                }
             }
+            catch { }
         }
     }
 }
