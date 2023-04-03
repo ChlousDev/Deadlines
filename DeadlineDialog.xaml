@@ -6,14 +6,15 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:Deadlines"
         mc:Ignorable="d"
-        Title="Deadline" Height="165" Width="300" WindowStartupLocation="CenterOwner" >
+        Title="Deadline" Height="185" Width="300" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" >
     <Grid Grid.Row="0" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"></RowDefinition>
+            <RowDefinition Height="95"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition Height="25"></RowDefinition>
             </Grid.RowDefinitions>
@@ -25,7 +26,17 @@
             <TextBox  Grid.Row="0" Grid.Column="1" Text="{Binding Name}" Margin="0,0,0,3"/>
             <TextBlock  Grid.Row="1" Grid.Column="0" Text="Deadline Time:" Margin="0,0,0,3"/>
             <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding Time}" Margin="0,0,0,3" Format="Custom"  FormatString="dd.MM.yyyy HH:mm"/>
-            
+            <TextBlock  Grid.Row="2" Grid.Column="0" Text="Deadline Color:" Margin="0,0,0,3"/>
+            <ComboBox  Grid.Row="2" Grid.Column="1" ItemsSource="{Binding ColorItemsSource}" SelectedValue="{Binding Color}" SelectedValuePath="Code">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Height="16" Width="16" Background="{Binding Code}" BorderBrush="Gray" BorderThickness="1" Margin="0,1,5,0"></Border>
+                            <TextBlock Text="{Binding DisplayName}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
