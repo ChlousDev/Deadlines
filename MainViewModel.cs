@@ -26,40 +26,6 @@ namespace Deadlines
         public ICommand AddDeadlineCommand { get; private set; }
         public ICommand EditDeadlineCommand { get; private set; }
 
-        private string newDeadlineName;
-        public string NewDeadlineName
-        {
-            get
-            {
-                return this.newDeadlineName;
-            }
-            set
-            {
-                if (this.newDeadlineName != value)
-                {
-                    this.newDeadlineName = value; ;
-                    this.OnPropertyChanged(nameof(MainViewModel.NewDeadlineName));
-                }
-            }
-        }
-
-        public DateTime? newDeadlineDateTime { get; set; }
-        public DateTime? NewDeadlineDateTime
-        {
-            get
-            {
-                return this.newDeadlineDateTime;
-            }
-            set
-            {
-                if (this.newDeadlineDateTime != value)
-                {
-                    this.newDeadlineDateTime = value; ;
-                    this.OnPropertyChanged(nameof(MainViewModel.NewDeadlineDateTime));
-                }
-            }
-        }
-
         public MainViewModel()
         {
             this.deadlines = new ObservableCollection<Deadline>();
@@ -110,9 +76,7 @@ namespace Deadlines
         private void EditDeadline(object parameter)
         {
             Deadline deadline = (Deadline)parameter;
-            DeadlineDialog deadlineDialog = new DeadlineDialog(deadline);
-            deadlineDialog.Owner = App.Current.MainWindow;
-            if (deadlineDialog.ShowDialog() == true)
+            if (this.ShowDeadlineDialog(deadline) == true)
             {
                 this.SaveDeadlinesToJson();
             }
@@ -122,28 +86,31 @@ namespace Deadlines
             }
         }
 
+        private bool? ShowDeadlineDialog(Deadline deadline)
+        {
+            DeadlineDialog deadlineDialog = new DeadlineDialog(deadline);
+            deadlineDialog.Owner = App.Current.MainWindow;
+            return deadlineDialog.ShowDialog();            
+        }
+
         private void AddDeadline()
         {
-            if (!this.NewDeadlineDateTime.HasValue)
+            Deadline deadline = new Deadline("", DateTime.Now);
+            if (this.ShowDeadlineDialog(deadline) == true)
             {
-                MessageBox.Show("Please select a valid date and time for the deadline.", "Invalid Deadline");
-            }
-            else if (string.IsNullOrEmpty(this.NewDeadlineName))
-            {
-                MessageBox.Show("Please enter a name for the deadline", "No Name for the deadline");
-            }
-            else
-            {
-                // create a new Deadline object and add it to the list
-                Deadline deadline = new Deadline(this.NewDeadlineName, this.NewDeadlineDateTime.Value);
-                this.deadlines.Add(deadline);
-
-                // save the deadlines to the JSON file
-                this.SaveDeadlinesToJson();
-
-                // reset the UI
-                this.NewDeadlineName = "";
-                this.NewDeadlineDateTime = null;
+                if (!deadline.Time.HasValue)
+                {
+                    MessageBox.Show("Please select a valid date and time for the deadline.", "Invalid Deadline");
+                }
+                else if (string.IsNullOrEmpty(deadline.Name))
+                {
+                    MessageBox.Show("Please enter a name for the deadline", "No Name for the deadline");
+                }
+                else
+                {
+                    this.deadlines.Add(deadline);
+                    this.SaveDeadlinesToJson();
+                }
             }
         }
 

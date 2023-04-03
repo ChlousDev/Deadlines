@@ -18,10 +18,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="165"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock  Grid.Row="0" Grid.Column="0" Text="Deadline Name:" Margin="0,0,0,3"/>
-            <TextBox  Grid.Row="0" Grid.Column="1" Text="{Binding NewDeadlineName}" Margin="0,0,0,3"/>
-            <TextBlock  Grid.Row="1" Grid.Column="0" Text="Deadline Time:" Margin="0,0,0,3"/>
-            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding NewDeadlineDateTime}" Margin="0,0,0,3" Format="Custom"  FormatString="dd.MM.yyyy HH:mm"/>
+
             <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding AddDeadlineCommand}">
                 <Image Source="/Icons/add.png" Height="22" Width="22"></Image>
             </Button>

@@ -8,12 +8,12 @@ namespace Deadlines
     public class Deadline : INotifyPropertyChanged
     {
         public string Name { get; set; }
-        public DateTime Time { get; set; }
+        public DateTime? Time { get; set; }
         public string TimeRemaining
         {
             get
             {
-                TimeSpan timeRemaining = Time - DateTime.Now;
+                TimeSpan timeRemaining = this.Time.HasValue ? this.Time.Value - DateTime.Now : TimeSpan.Zero;
                 if (timeRemaining < TimeSpan.Zero)
                 {
                     timeRemaining = TimeSpan.Zero;
@@ -37,8 +37,8 @@ namespace Deadlines
 
             //Time down to minutes part
             this.Time = time.Date;
-            this.Time = this.Time.AddHours(time.Hour);
-            this.Time = this.Time.AddMinutes(time.Minute);
+            this.Time = this.Time.Value.AddHours(time.Hour);
+            this.Time = this.Time.Value.AddMinutes(time.Minute);
         }
 
         public void UpdateTimeRemaining()
